@@ -7,6 +7,7 @@
 from __future__ import print_function
 from ghidra.program.flatapi import FlatProgramAPI
 from ghidra.program.model.symbol import SourceType
+from ghidra.program.model.data import CategoryPath
 from ghidra.util import Msg
 from ghidra.program.model.data import BuiltInDataTypeManager, DataTypeConflictHandler, StructureDataType
 from ghidra.program.model.util import CodeUnitInsertionException
