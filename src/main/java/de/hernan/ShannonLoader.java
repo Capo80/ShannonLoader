@@ -129,6 +129,23 @@ public class ShannonLoader extends BinaryLoader
               "\\x00\\x00\\x00\\x04 # matches address 0x04000000 which is the Cortex-R Tightly Coupled Memory (TCM) region",
               "\\x1e # matches the size code of 0x10000"
               )
+            ),
+            new PatternEntry(String.join("\n",
+              "# S5 mini / Tab 4 family.",
+              "# On this family MAIN loads at 0x00010000 and slots 0",
+              "# and 1 cover code SRAM at 0x20000000 / 0x20800000 instead of starting at",
+              "# 0x00000000, so both differ from the patterns above.",
+              "\\x00\\x00\\x00\\x00 # matches a slot ID of 0",
+              "\\x00\\x00\\x00\\x20 # matches a base address of 0x20000000",
+              "\\x1e\\x00\\x00\\x00 # matches a size code of 0x10000 bytes",
+              "(....){6} # matches 6 arbitrary 4-byte values",
+              "\\x01\\x00\\x00\\x00 # matches an enable of 1",
+              "\\x01\\x00\\x00\\x00 # matches the next entry slot ID of 1",
+              "\\x00\\x00\\x80\\x20 # matches address 0x20800000, a code SRAM window (NOT the TCM:",
+              "# this family keeps a separate 0x04000000 region in slot 5). Both 0x20000000",
+              "# and 0x20800000 are confirmed by scatterload copying executable content there.",
+              "\\x1c # matches the size code of 0x8000"
+              )
             )
           )
         ),
@@ -167,6 +184,20 @@ public class ShannonLoader extends BinaryLoader
               "\\x0c\\x94\\x01\\x00 # matches flags",
               "\\x01\\x00\\x00\\x00 # matches next range phys start address",
               "\\x00\\x00\\x10\\x00 # matches next range virt start address"
+              )
+            ),
+            new PatternEntry(String.join("\n",
+              "# Exynos 990 / Shannon 5123 (S20, S20 Ultra, Note 20, S20 FE, A71 5G).",
+              "# Row 0 is invariant across every build examined, but row 1 varies in its",
+              "# section count, base address and flags, so we can only look for a",
+              "# 1 MB aligned virt and phys pair which seems to be enough",
+              "\\x01\\x00\\x00\\x00 # matches the number of sections",
+              "\\x00\\x00\\x00\\x00 # matches the virt start address",
+              "\\x00\\x00\\x00\\x00 # matches the phys start address",
+              "\\x0c\\x94\\x01\\x00 # matches flags 0x0001940c",
+              ".... # matches the next range's section count, any value",
+              "\\x00\\x00[\\x00\\x10\\x20\\x30\\x40\\x50\\x60\\x70\\x80\\x90\\xa0\\xb0\\xc0\\xd0\\xe0\\xf0]. # next virt start, 1 MB aligned",
+              "\\x00\\x00[\\x00\\x10\\x20\\x30\\x40\\x50\\x60\\x70\\x80\\x90\\xa0\\xb0\\xc0\\xd0\\xe0\\xf0]. # next phys start, 1 MB aligned"
               )
             )
           )
